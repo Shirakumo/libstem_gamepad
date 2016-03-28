@@ -1,0 +1,31 @@
+cmake_minimum_required(VERSION 3.1)
+project(stem_gamepad)
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}")
+set(CMAKE_BUILD_TYPE Release)
+
+add_library(stem_gamepad SHARED)
+
+include_directories(source)
+target_sources(stem_gamepad PUBLIC "source/gamepad/Gamepad_private.c")
+
+if(UNIX AND NOT APPLE)
+  target_sources(stem_gamepad PUBLIC "source/gamepad/Gamepad_linux.c")
+endif()
+
+if(APPLE)
+  target_sources(stem_gamepad PUBLIC "source/gamepad/Gamepad_macosx.c")
+endif()
+
+if(WIN32)
+  find_package(WindowsSDK REQUIRED)
+  include_directories(${WINSDK_INCLUDE_DIRS})
+  target_compile_options(stem_gamepad PRIVATE -D_MSC_VER=1500)
+  target_link_libraries(stem_gamepad ${WINSDK_LIBRARY_DIRS})
+  target_sources(stem_gamepad PUBLIC "source/gamepad/Gamepad_windows_dinput.c")
+endif()
+
+
+if(WIN32)
+endif()
+
+install(TARGETS stem_gamepad DESTINATION /usr/lib)
