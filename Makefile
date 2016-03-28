@@ -7,7 +7,7 @@ ifeq ($(OS),Windows_NT)
     MAKE ?= nmake
 else
     MAKEDIR ?= mkdir -p
-    REMOVEDIR ?= rm -r
+    REMOVEDIR ?= rm -rf
     CMAKE ?= cmake
     MAKE ?= make
 endif
