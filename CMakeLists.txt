@@ -13,6 +13,9 @@ if(UNIX AND NOT APPLE)
 endif()
 
 if(APPLE)
+  find_library(CORE_FOUNDATION CoreFoundation)
+  find_library(IOKit_LIBRARY IOKit)
+  target_link_libraries(stem_gamepad ${IOKit_LIBRARY} ${CORE_FOUNDATION})
   target_sources(stem_gamepad PUBLIC "source/gamepad/Gamepad_macosx.c")
 endif()
 
