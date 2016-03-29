@@ -33,8 +33,9 @@ extern "C" {
 #else
 #include <stdbool.h>
 #endif
+#include "gamepad/Gamepad_export.h"
 
-struct Gamepad_device {
+STEM_GAMEPAD_EXPORT struct Gamepad_device {
 	// Unique device identifier for application session, starting at 0 for the first device attached and
 	// incrementing by 1 for each additional device. If a device is removed and subsequently reattached
 	// during the same application session, it will have a new deviceID.
@@ -71,18 +72,18 @@ struct Gamepad_device {
    
    This function must be called from the same thread that will be calling Gamepad_processEvents()
    and Gamepad_detectDevices(). */
-void Gamepad_init();
+STEM_GAMEPAD_EXPORT void Gamepad_init();
 
 /* Tears down all data structures created by the gamepad library and releases any memory that was
    allocated. It is not necessary to call this function at application termination, but it's
    provided in case you want to free memory associated with gamepads at some earlier time. */
-void Gamepad_shutdown();
+STEM_GAMEPAD_EXPORT void Gamepad_shutdown();
 
 /* Returns the number of currently attached gamepad devices. */
-unsigned int Gamepad_numDevices();
+STEM_GAMEPAD_EXPORT unsigned int Gamepad_numDevices();
 
 /* Returns the specified Gamepad_device struct, or NULL if deviceIndex is out of bounds. */
-struct Gamepad_device * Gamepad_deviceAtIndex(unsigned int deviceIndex);
+STEM_GAMEPAD_EXPORT struct Gamepad_device * Gamepad_deviceAtIndex(unsigned int deviceIndex);
 
 /* Polls for any devices that have been attached since the last call to Gamepad_detectDevices() or
    Gamepad_init(). If any new devices are found, the callback registered with
@@ -92,41 +93,41 @@ struct Gamepad_device * Gamepad_deviceAtIndex(unsigned int deviceIndex);
    devices that have not yet been detected with Gamepad_detectDevices(). You can safely ignore
    these events, but be aware that your callbacks might receive a device ID that hasn't been seen
    by your deviceAttachFunc. */
-void Gamepad_detectDevices();
+STEM_GAMEPAD_EXPORT void Gamepad_detectDevices();
 
 /* Reads pending input from all attached devices and calls the appropriate input callbacks, if any
    have been registered. */
-void Gamepad_processEvents();
+STEM_GAMEPAD_EXPORT void Gamepad_processEvents();
 
 /* Registers a function to be called whenever a device is attached. The specified function will be
    called only during calls to Gamepad_init() and Gamepad_detectDevices(), in the thread from
    which those functions were called. Calling this function with a NULL argument will stop any
    previously registered callback from being called subsequently. */
-void Gamepad_deviceAttachFunc(void (* callback)(struct Gamepad_device * device, void * context), void * context);
+STEM_GAMEPAD_EXPORT void Gamepad_deviceAttachFunc(void (* callback)(struct Gamepad_device * device, void * context), void * context);
 
 /* Registers a function to be called whenever a device is detached. The specified function can be
    called at any time, and will not necessarily be called from the main thread. Calling this
    function with a NULL argument will stop any previously registered callback from being called
    subsequently. */
-void Gamepad_deviceRemoveFunc(void (* callback)(struct Gamepad_device * device, void * context), void * context);
+STEM_GAMEPAD_EXPORT void Gamepad_deviceRemoveFunc(void (* callback)(struct Gamepad_device * device, void * context), void * context);
 
 /* Registers a function to be called whenever a button on any attached device is pressed. The
    specified function will be called only during calls to Gamepad_processEvents(), in the
    thread from which Gamepad_processEvents() was called. Calling this function with a NULL
    argument will stop any previously registered callback from being called subsequently.  */
-void Gamepad_buttonDownFunc(void (* callback)(struct Gamepad_device * device, unsigned int buttonID, double timestamp, void * context), void * context);
+STEM_GAMEPAD_EXPORT void Gamepad_buttonDownFunc(void (* callback)(struct Gamepad_device * device, unsigned int buttonID, double timestamp, void * context), void * context);
 
 /* Registers a function to be called whenever a button on any attached device is released. The
    specified function will be called only during calls to Gamepad_processEvents(), in the
    thread from which Gamepad_processEvents() was called. Calling this function with a NULL
    argument will stop any previously registered callback from being called subsequently.  */
-void Gamepad_buttonUpFunc(void (* callback)(struct Gamepad_device * device, unsigned int buttonID, double timestamp, void * context), void * context);
+STEM_GAMEPAD_EXPORT void Gamepad_buttonUpFunc(void (* callback)(struct Gamepad_device * device, unsigned int buttonID, double timestamp, void * context), void * context);
 
 /* Registers a function to be called whenever an axis on any attached device is moved. The
    specified function will be called only during calls to Gamepad_processEvents(), in the
    thread from which Gamepad_processEvents() was called. Calling this function with a NULL
    argument will stop any previously registered callback from being called subsequently.  */
-void Gamepad_axisMoveFunc(void (* callback)(struct Gamepad_device * device, unsigned int axisID, float value, float lastValue, double timestamp, void * context), void * context);
+STEM_GAMEPAD_EXPORT void Gamepad_axisMoveFunc(void (* callback)(struct Gamepad_device * device, unsigned int axisID, float value, float lastValue, double timestamp, void * context), void * context);
 
 #ifdef __cplusplus
 }

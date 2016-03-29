@@ -33,7 +33,8 @@
 #define __out
 #define __reserved
 #endif
-  
+
+#include "gamepad/Gamepad_export.h"
 #include "gamepad/Gamepad.h"
 #include "gamepad/Gamepad_private.h"
 #include <stdio.h>
@@ -225,7 +226,7 @@ static LPDIRECTINPUT directInputInterface;
 static bool inited = false;
 static bool xInputAvailable;
 
-void Gamepad_init() {
+STEM_GAMEPAD_EXPORT void Gamepad_init() {
 	if (!inited) {
 		HRESULT result;
 		HMODULE module;
@@ -287,7 +288,7 @@ static void disposeDevice(struct Gamepad_device * deviceRecord) {
 	free(deviceRecord);
 }
 
-void Gamepad_shutdown() {
+STEM_GAMEPAD_EXPORT void Gamepad_shutdown() {
 	unsigned int deviceIndex;
 	
 	if (inited) {
@@ -302,11 +303,11 @@ void Gamepad_shutdown() {
 	}
 }
 
-unsigned int Gamepad_numDevices() {
+STEM_GAMEPAD_EXPORT unsigned int Gamepad_numDevices() {
 	return numDevices;
 }
 
-struct Gamepad_device * Gamepad_deviceAtIndex(unsigned int deviceIndex) {
+STEM_GAMEPAD_EXPORT struct Gamepad_device * Gamepad_deviceAtIndex(unsigned int deviceIndex) {
 	if (deviceIndex >= numDevices) {
 		return NULL;
 	}
@@ -877,7 +878,7 @@ static void removeDevice(unsigned int deviceIndex) {
 	}
 }
 
-void Gamepad_detectDevices() {
+STEM_GAMEPAD_EXPORT void Gamepad_detectDevices() {
 	HRESULT result;
 	DWORD xResult;
 	XINPUT_CAPABILITIES capabilities;
@@ -1003,7 +1004,7 @@ static void updatePOVAxisValues(struct Gamepad_device * device, unsigned int axi
 	updateAxisValueFloat(device, axisIndex + 1, y, timestamp);
 }
 
-void Gamepad_processEvents() {
+STEM_GAMEPAD_EXPORT void Gamepad_processEvents() {
 	static bool inProcessEvents;
 	unsigned int deviceIndex, buttonIndex, axisIndex;
 	struct Gamepad_device * device;
