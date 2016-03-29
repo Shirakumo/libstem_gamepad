@@ -1,12 +1,11 @@
 CD ?= cd
+MAKEDIR ?= mkdir
 
 ifeq ($(OS),Windows_NT)
-    MAKEDIR ?= mkdir
     REMOVEDIR ?= rmdir /s
     CMAKE ?= cmake -G "NMake makefiles"
     MAKE ?= nmake
 else
-    MAKEDIR ?= mkdir -p
     REMOVEDIR ?= rm -rf
     CMAKE ?= cmake
     MAKE ?= make
