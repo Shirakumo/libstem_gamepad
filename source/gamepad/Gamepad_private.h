@@ -10,56 +10,59 @@
   freely, subject to the following restrictions:
   
   1. The origin of this software must not be misrepresented; you must not
-     claim that you wrote the original software. If you use this software
-     in a product, an acknowledgment in the product documentation would be
-     appreciated but is not required.
+  claim that you wrote the original software. If you use this software
+  in a product, an acknowledgment in the product documentation would be
+  appreciated but is not required.
   2. Altered source versions must be plainly marked as such, and must not be
-     misrepresented as being the original software.
+  misrepresented as being the original software.
   3. This notice may not be removed or altered from any source distribution.
   
   Alex Diener alex@ludobloom.com
+
+  Modified by
+  Nicolas Hafner <shinmera@tymoon.eu>
 */
 
 #ifndef __GAMEPAD_PRIVATE_H__
 #define __GAMEPAD_PRIVATE_H__
 
 enum Gamepad_eventType {
-	GAMEPAD_EVENT_DEVICE_ATTACHED,
-	GAMEPAD_EVENT_DEVICE_REMOVED,
-	GAMEPAD_EVENT_BUTTON_DOWN,
-	GAMEPAD_EVENT_BUTTON_UP,
-	GAMEPAD_EVENT_AXIS_MOVED
+  GAMEPAD_EVENT_DEVICE_ATTACHED,
+  GAMEPAD_EVENT_DEVICE_REMOVED,
+  GAMEPAD_EVENT_BUTTON_DOWN,
+  GAMEPAD_EVENT_BUTTON_UP,
+  GAMEPAD_EVENT_AXIS_MOVED
 };
 
 struct Gamepad_buttonEvent {
-	// Device that generated the event
-	struct Gamepad_device * device;
+  // Device that generated the event
+  struct Gamepad_device * device;
 	
-	// Relative time of the event, in seconds
-	double timestamp;
+  // Relative time of the event, in seconds
+  double timestamp;
 	
-	// Button being pushed or released
-	unsigned int buttonID;
+  // Button being pushed or released
+  unsigned int buttonID;
 	
-	// True if button is down
-	bool down;
+  // True if button is down
+  bool down;
 };
 
 struct Gamepad_axisEvent {
-	// Device that generated the event
-	struct Gamepad_device * device;
+  // Device that generated the event
+  struct Gamepad_device * device;
 	
-	// Relative time of the event, in seconds
-	double timestamp;
+  // Relative time of the event, in seconds
+  double timestamp;
 	
-	// Axis being moved
-	unsigned int axisID;
+  // Axis being moved
+  unsigned int axisID;
 	
-	// Axis position value, in the range [-1..1]
-	float value;
+  // Axis position value, in the range [-1..1]
+  float value;
 	
-	// Previous axis position value, in the range [-1..1]
-	float lastValue;
+  // Previous axis position value, in the range [-1..1]
+  float lastValue;
 };
 
 extern void (* Gamepad_deviceAttachCallback)(struct Gamepad_device * device, void * context);
