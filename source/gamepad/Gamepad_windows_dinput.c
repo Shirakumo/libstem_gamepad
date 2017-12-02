@@ -847,6 +847,7 @@ static BOOL CALLBACK enumDevicesCallback(const DIDEVICEINSTANCE * instance, LPVO
   deviceRecord->description = strdup(instance->tszProductName);
   deviceRecord->vendorID = instance->guidProduct.Data1 & 0xFFFF;
   deviceRecord->productID = instance->guidProduct.Data1 >> 16 & 0xFFFF;
+  deviceRecord->deviceMap = Gamepad_deviceMap(deviceRecord->vendorID, deviceRecord->productID);
   deviceRecord->numAxes = 0;
   IDirectInputDevice_EnumObjects(di8Device, countAxesCallback, deviceRecord, DIDFT_AXIS | DIDFT_POV);
   deviceRecord->numButtons = 0;

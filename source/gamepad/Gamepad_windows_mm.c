@@ -183,6 +183,7 @@ void Gamepad_detectDevices() {
       deviceRecord->description = getDeviceDescription(joystickID, caps);
       deviceRecord->vendorID = caps.wMid;
       deviceRecord->productID = caps.wPid;
+      deviceRecord->deviceMap = Gamepad_deviceMap(deviceRecord->vendorID, deviceRecord->productID);
       deviceRecord->numAxes = caps.wNumAxes + ((caps.wCaps & JOYCAPS_HASPOV) ? 2 : 0);
       deviceRecord->numButtons = caps.wNumButtons;
       deviceRecord->axisStates = calloc(sizeof(float), deviceRecord->numAxes);

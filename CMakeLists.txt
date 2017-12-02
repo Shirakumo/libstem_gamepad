@@ -7,6 +7,14 @@ add_library(stem_gamepad SHARED)
 
 include_directories(source)
 target_sources(stem_gamepad PUBLIC "source/gamepad/Gamepad_private.c")
+set_property(TARGET stem_gamepad PROPERTY C_STANDARD 99)
+set_property(TARGET stem_gamepad PROPERTY POSITION_INDEPENDENT_CODE ON)
+target_compile_definitions(stem_gamepad PRIVATE STEM_GAMEPAD_BUILD=1)
+
+if(CMAKE_CXX_COMPILER_ID MATCHES "Clang"
+    OR CMAKE_CXX_COMPILER_ID MATCHES "GNU")
+  target_compile_options(stem_gamepad PRIVATE -fvisibility=hidden)
+endif()
 
 if(UNIX AND NOT APPLE)
   target_sources(stem_gamepad PUBLIC "source/gamepad/Gamepad_linux.c")

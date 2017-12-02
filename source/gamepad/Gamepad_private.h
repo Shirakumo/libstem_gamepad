@@ -25,6 +25,7 @@
 
 #ifndef __GAMEPAD_PRIVATE_H__
 #define __GAMEPAD_PRIVATE_H__
+#include <stdint.h>
 
 enum Gamepad_eventType {
   GAMEPAD_EVENT_DEVICE_ATTACHED,
@@ -63,6 +64,13 @@ struct Gamepad_axisEvent {
 	
   // Previous axis position value, in the range [-1..1]
   float lastValue;
+};
+
+struct Gamepad_device_map_i{
+  enum Gamepad_button buttonMap[32];
+  enum Gamepad_axis axisMap[32];
+  char axisMultiplier[32];
+  uint32_t id;
 };
 
 extern void (* Gamepad_deviceAttachCallback)(struct Gamepad_device * device, void * context);

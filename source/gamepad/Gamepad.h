@@ -36,8 +36,74 @@ extern "C" {
 #else
 #include <stdbool.h>
 #endif
-#include "gamepad/Gamepad_export.h"
 
+#if defined STEM_GAMEPAD_STATIC
+#  define STEM_GAMEPAD_EXPORT
+#elif defined _MSC_VER
+#  if defined STEM_GAMEPAD_BUILD
+#    define STEM_GAMEPAD_EXPORT __declspec(dllexport)
+#  else
+#    define STEM_GAMEPAD_EXPORT __declspec(dllimport)
+#  endif
+#elif defined __GNUC__
+#  if defined STEM_GAMEPAD_BUILD
+#    define STEM_GAMEPAD_EXPORT __attribute__((visibility("default")))
+#  else
+#    define STEM_GAMEPAD_EXPORT
+#  endif
+#else
+#  define STEM_GAMEPAD_EXPORT
+#endif
+
+  STEM_GAMEPAD_EXPORT enum Gamepad_button{
+    STEM_BUTTON_UNKNOWN,
+    STEM_BUTTON_X,
+    STEM_BUTTON_Y,
+    STEM_BUTTON_A,
+    STEM_BUTTON_B,
+    STEM_BUTTON_L1,
+    STEM_BUTTON_L2,
+    STEM_BUTTON_R1,
+    STEM_BUTTON_R2,
+    STEM_BUTTON_AXIS_L,
+    STEM_BUTTON_AXIS_R,
+    STEM_BUTTON_DPAD_L,
+    STEM_BUTTON_DPAD_R,
+    STEM_BUTTON_DPAD_U,
+    STEM_BUTTON_DPAD_D,
+    STEM_BUTTON_SELECT,
+    STEM_BUTTON_HOME,
+    STEM_BUTTON_START,
+    STEM_BUTTON_TRIGGER
+  };
+
+  STEM_GAMEPAD_EXPORT enum Gamepad_axis{
+    STEM_AXIS_UNKNOWN,
+    STEM_AXIS_L,
+    STEM_AXIS_R,
+    STEM_AXIS_X,
+    STEM_AXIS_Y,
+    STEM_AXIS_Z,
+    STEM_AXIS_BUTTON_X,
+    STEM_AXIS_BUTTON_Y,
+    STEM_AXIS_BUTTON_A,
+    STEM_AXIS_BUTTON_B,
+    STEM_AXIS_BUTTON_L1,
+    STEM_AXIS_BUTTON_L2,
+    STEM_AXIS_BUTTON_R1,
+    STEM_AXIS_BUTTON_R2,
+    STEM_AXIS_TILT_X,
+    STEM_AXIS_TILT_Y,
+    STEM_AXIS_TILT_Z,
+    STEM_AXIS_MOVE_X,
+    STEM_AXIS_MOVE_Y,
+    STEM_AXIS_MOVE_Z,
+    STEM_AXIS_WHEEL,
+    STEM_AXIS_ACCELERATOR,
+    STEM_AXIS_BRAKE,
+    STEM_AXIS_THROTTLE
+  };
+  
   STEM_GAMEPAD_EXPORT struct Gamepad_device {
     // Unique device identifier for application session, starting at 0 for the first device attached and
     // incrementing by 1 for each additional device. If a device is removed and subsequently reattached
@@ -62,10 +128,24 @@ extern "C" {
 	
     // Array[numButtons] of values representing the current state of each button
     bool * buttonStates;
+
+    // Pointer to a device map struct to map the buttons and axes to standardised IDs.
+    struct Gamepad_device_map *deviceMap;
 	
     // Platform-specific device data storage. Don't touch unless you know what you're doing and don't
     // mind your code breaking in future versions of this library.
     void * privateData;
+  };
+
+  STEM_GAMEPAD_EXPORT struct Gamepad_device_map{
+    // Mapping the button to a standardised ID.
+    enum Gamepad_button buttonMap[32];
+
+    // Mapping the axis to a standardised ID.
+    enum Gamepad_axis axisMap[32];
+
+    // A multiplier (either 1 or -1) to standardise the axis direction.
+    char axisMultiplier[32];
   };
 
   /* Initializes gamepad library and detects initial devices. Call this before any other Gamepad_*()
@@ -87,6 +167,15 @@ extern "C" {
 
   /* Returns the specified Gamepad_device struct, or NULL if deviceIndex is out of bounds. */
   STEM_GAMEPAD_EXPORT struct Gamepad_device * Gamepad_deviceAtIndex(unsigned int deviceIndex);
+
+  /* Retrieves a pointer to a device map for the particular vendor and product.
+     If no specific map exists, a pointer to a generic map is returned instead. */
+  STEM_GAMEPAD_EXPORT struct Gamepad_device_map *Gamepad_deviceMap(int vendorID, int productID);
+  
+  /* Registers the given device map for the particular vendor and product.
+     The map is copied and can thus be deallocated after passing it.
+     Passing a null-pointer will remove the device map. */
+  STEM_GAMEPAD_EXPORT char Gamepad_setDeviceMap(int vendorID, int productID, struct Gamepad_device_map *map);
 
   /* Polls for any devices that have been attached since the last call to Gamepad_detectDevices() or
      Gamepad_init(). If any new devices are found, the callback registered with

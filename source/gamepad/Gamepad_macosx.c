@@ -275,6 +275,7 @@ static void onDeviceMatched(void * context, IOReturn result, void * sender, IOHI
   deviceRecord->deviceID = nextDeviceID++;
   deviceRecord->vendorID = IOHIDDeviceGetVendorID(device);
   deviceRecord->productID = IOHIDDeviceGetProductID(device);
+  deviceRecord->deviceMap = Gamepad_deviceMap(deviceRecord->vendorID, deviceRecord->productID);
   deviceRecord->numAxes = 0;
   deviceRecord->numButtons = 0;
   devices = realloc(devices, sizeof(struct Gamepad_device *) * (numDevices + 1));

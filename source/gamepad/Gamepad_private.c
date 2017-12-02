@@ -23,10 +23,90 @@
   Nicolas Hafner <shinmera@tymoon.eu>
 */
 
-#include "gamepad/Gamepad_export.h"
 #include "gamepad/Gamepad.h"
 #include "gamepad/Gamepad_private.h"
 #include <stdlib.h>
+
+int device_map_count = 0;
+int device_map_size = 0;
+struct Gamepad_device_map_i **device_maps = 0;
+struct Gamepad_device_map_i generic_device = {
+  .buttonMap      = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+  .axisMap        = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+  .axisMultiplier = {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+  .id = 0
+};
+
+uint32_t to_id(int vendorID, int productID){
+  return ((vendorID & 0xFFFF) << 16) | (productID & 0xFFFF);
+}
+
+int find_device_map(int vendorID, int productID){
+  if(device_maps == 0) return -1;
+  
+  uint32_t id = to_id(vendorID, productID);
+  for(int i=0; i<device_map_count; ++i){
+    if(device_maps[i]->id == id) return i;
+  }
+  return -1;
+}
+
+STEM_GAMEPAD_EXPORT struct Gamepad_device_map *Gamepad_deviceMap(int vendorID, int productID){
+  int map_index = find_device_map(vendorID, productID);
+  if(map_index != -1){
+    return (struct Gamepad_device_map *)device_maps[map_index];
+  }else{
+    return (struct Gamepad_device_map *)&generic_device;
+  }
+}
+
+STEM_GAMEPAD_EXPORT char Gamepad_setDeviceMap(int vendorID, int productID, struct Gamepad_device_map *map){
+  if(map == 0){
+    int map_index = find_device_map(vendorID, productID);
+    if(map_index != -1){
+      // WARN: this might actually fuck things up because devices
+      //       might still point to the freed device map.
+      free(device_maps[map_index]);
+      for(int i=map_index; i<device_map_count-1; ++i){
+        device_maps[i] = device_maps[i+1];
+      }
+      device_map_count -= 1;
+    }
+  }else{
+    // Increase storage if necesssary
+    if(device_map_size < device_map_count+1){
+      struct Gamepad_device_map_i **new = (device_maps == 0)
+        ? calloc(32, sizeof(struct Gamepad_device_map_i *))
+        : realloc(device_maps, sizeof(struct Gamepad_device_map_i *)*(device_map_size+32));
+      if(new == 0) return 0;
+      
+      device_maps = new;
+      device_map_size += 32;
+    }
+
+    struct Gamepad_device_map_i *internal;
+    int map_index = find_device_map(vendorID, productID);
+    
+    if(map_index != -1){
+      internal = device_maps[map_index];
+    }else{
+      // Allocate a new storage since we don't have this map yet.
+      internal = calloc(1, sizeof(struct Gamepad_device_map_i));
+      if(internal == 0) return 0;
+      internal->id = to_id(vendorID, productID);
+      device_maps[device_map_count] = internal;
+      device_map_count += 1;
+    }
+    
+    for(int i=0; i<32; ++i){
+      internal->buttonMap[i] = map->buttonMap[i];
+      internal->axisMap[i] = map->axisMap[i];
+      internal->axisMultiplier[i] = map->axisMultiplier[i];
+    }
+    
+    return 1;
+  }
+}
 
 void (* Gamepad_deviceAttachCallback)(struct Gamepad_device * device, void * context) = NULL;
 void (* Gamepad_deviceRemoveCallback)(struct Gamepad_device * device, void * context) = NULL;
