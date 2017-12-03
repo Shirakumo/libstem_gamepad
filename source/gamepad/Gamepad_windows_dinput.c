@@ -925,6 +925,7 @@ STEM_GAMEPAD_EXPORT void Gamepad_detectDevices() {
         // DirectInput device enumeration. All we can do is assume all XInput devices are XBox 360 controllers.
         deviceRecord->vendorID = 0x45E;
         deviceRecord->productID = 0x28E;
+        deviceRecord->deviceMap = Gamepad_deviceMap(deviceRecord->vendorID, deviceRecord->productID);
         deviceRecord->numAxes = 6;
         deviceRecord->numButtons = 15;
         deviceRecord->axisStates = calloc(sizeof(float), deviceRecord->numAxes);
