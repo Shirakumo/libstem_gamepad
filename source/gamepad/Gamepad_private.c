@@ -98,7 +98,7 @@ STEM_GAMEPAD_EXPORT char Gamepad_setDeviceMap(int vendorID, int productID, struc
       device_map_count += 1;
     }
     
-    for(int i=0; i<32; ++i){
+    for(int i=0; i<STEM_GAMEPAD_DEVICE_MAP_MAX; ++i){
       internal->buttonMap[i] = map->buttonMap[i];
       internal->axisMap[i] = map->axisMap[i];
       internal->axisMultiplier[i] = map->axisMultiplier[i];

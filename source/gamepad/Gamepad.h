@@ -55,6 +55,8 @@ extern "C" {
 #  define STEM_GAMEPAD_EXPORT
 #endif
 
+#define STEM_GAMEPAD_DEVICE_MAP_MAX 64
+  
   STEM_GAMEPAD_EXPORT enum Gamepad_button{
     STEM_BUTTON_UNKNOWN,
     STEM_BUTTON_X,
@@ -151,13 +153,13 @@ extern "C" {
 
   STEM_GAMEPAD_EXPORT struct Gamepad_device_map{
     // Mapping the button to a standardised ID.
-    enum Gamepad_button buttonMap[32];
+    enum Gamepad_button buttonMap[STEM_GAMEPAD_DEVICE_MAP_MAX];
 
     // Mapping the axis to a standardised ID.
-    enum Gamepad_axis axisMap[32];
+    enum Gamepad_axis axisMap[STEM_GAMEPAD_DEVICE_MAP_MAX];
 
     // A multiplier (either 1 or -1) to standardise the axis direction.
-    char axisMultiplier[32];
+    char axisMultiplier[STEM_GAMEPAD_DEVICE_MAP_MAX];
   };
 
   /* Initializes gamepad library and detects initial devices. Call this before any other Gamepad_*()

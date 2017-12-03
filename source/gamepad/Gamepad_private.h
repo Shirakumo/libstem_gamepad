@@ -67,9 +67,9 @@ struct Gamepad_axisEvent {
 };
 
 struct Gamepad_device_map_i{
-  enum Gamepad_button buttonMap[32];
-  enum Gamepad_axis axisMap[32];
-  char axisMultiplier[32];
+  enum Gamepad_button buttonMap[STEM_GAMEPAD_DEVICE_MAP_MAX];
+  enum Gamepad_axis axisMap[STEM_GAMEPAD_DEVICE_MAP_MAX];
+  char axisMultiplier[STEM_GAMEPAD_DEVICE_MAP_MAX];
   uint32_t id;
 };
 
