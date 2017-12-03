@@ -37,7 +37,6 @@
 #define __reserved
 #endif
 
-#include "gamepad/Gamepad_export.h"
 #include "gamepad/Gamepad.h"
 #include "gamepad/Gamepad_private.h"
 #include <stdio.h>
